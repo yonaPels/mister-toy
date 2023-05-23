@@ -2,7 +2,7 @@
 import { storageService } from './async-storage.service.js'
 import { utilService } from './util.service.js'
 import { userService } from './user.service.js'
-// import { httpService } from './http.service.js'
+import { httpService } from './http.service.js'
 
 const STORAGE_KEY = 'toyDB'
 const BASE_URL = 'toy/'
@@ -16,57 +16,57 @@ export const toyService = {
     getDefaultFilter
 }
 
-function query(filterBy = {}) {
-    // return axios.get(BASE_URL).then(res => res.data)
-    return storageService.query(STORAGE_KEY).then((toys) => {
-        if (filterBy.maxPrice) toys = toys.filter(toy => (toy.price <= filterBy.maxPrice))
-        if (filterBy.txt) {
-            const regExp = new RegExp(filterBy.txt, 'i')
-            toys = toys.filter(toy => regExp.test(toy.name))
-            console.log('toys:', toys)
-        }
-        return toys
-    })
-}
-
-function getById(todoId) {
-    return storageService.get(STORAGE_KEY, todoId)
-}
-
-function remove(todoId) {
-    return storageService.remove(STORAGE_KEY, todoId)
-}
-
-function save(todo) {
-    if (todo._id) {
-        return storageService.put(STORAGE_KEY, todo)
-    } else {
-        // when switching to backend - remove the next line
-        todo.owner = userService.getLoggedinUser()
-        return storageService.post(STORAGE_KEY, todo)
-    }
-}
-
 // function query(filterBy = {}) {
-//     return httpService.get(BASE_URL, filterBy)
+//     return axios.get(BASE_URL).then(res => res.data)
+// return storageService.query(STORAGE_KEY).then((toys) => {
+//     if (filterBy.maxPrice) toys = toys.filter(toy => (toy.price <= filterBy.maxPrice))
+//     if (filterBy.txt) {
+//         const regExp = new RegExp(filterBy.txt, 'i')
+//         toys = toys.filter(toy => regExp.test(toy.name))
+//         console.log('toys:', toys)
+//     }
+//     return toys
+// })
 // }
 
-// function getById(toyId) {
-//     return httpService.get(BASE_URL + toyId)
+// function getById(todoId) {
+//     return storageService.get(STORAGE_KEY, todoId)
 // }
 
-// function remove(toyId) {
-//     // return Promise.reject('Not now!')
-//     return httpService.delete(BASE_URL + toyId)
+// function remove(todoId) {
+//     return storageService.remove(STORAGE_KEY, todoId)
 // }
-// function save(toy) {
-//     if (toy._id) {
-//         return httpService.put(BASE_URL, toy)
+
+// function save(todo) {
+//     if (todo._id) {
+//         return storageService.put(STORAGE_KEY, todo)
 //     } else {
 //         // when switching to backend - remove the next line
-//         return httpService.post(BASE_URL, toy)
+//         todo.owner = userService.getLoggedinUser()
+//         return storageService.post(STORAGE_KEY, todo)
 //     }
 // }
+
+function query(filterBy = {}) {
+    return httpService.get(BASE_URL, filterBy)
+}
+
+function getById(toyId) {
+    return httpService.get(BASE_URL + toyId)
+}
+
+function remove(toyId) {
+    // return Promise.reject('Not now!')
+    return httpService.delete(BASE_URL + toyId)
+}
+function save(toy) {
+    if (toy._id) {
+        return httpService.put(BASE_URL, toy)
+    } else {
+        // when switching to backend - remove the next line
+        return httpService.post(BASE_URL, toy)
+    }
+}
 
 function getEmptyToy() {
     return {
